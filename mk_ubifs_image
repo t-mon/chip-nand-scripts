@@ -1,0 +1,78 @@
+#!/bin/bash
+
+set -xe
+
+SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $SCRIPTDIR/common.sh
+
+require mkfs.ubifs "Please install mtd-utils"
+
+# build the UBIFS image
+prepare_ubifs() {
+  local outputfile="$1"
+  local rootfstar="$2"
+  local nandtype="$3"
+  local maxlebcount="$4"
+  local eraseblocksize="$5"
+  local pagesize="$6"
+  local subpagesize="$7"
+  local tmpdir=`mktemp -d -t chip-ubi-XXXXXX`
+  local rootfs=$tmpdir/rootfs
+
+  if [ -z $subpagesize ]; then
+    subpagesize=$pagesize
+  fi
+
+  if [ "$nandtype" = "mlc" ]; then
+    lebsize=$((eraseblocksize/2-$pagesize*2))
+  elif [ $subpagesize -lt $pagesize ]; then
+    lebsize=$((eraseblocksize-pagesize))
+  else
+    lebsize=$((eraseblocksize-pagesize*2))
+  fi
+
+  mkdir -p $rootfs
+  fakeroot /bin/bash <<EOF
+tar -xf $rootfstar -C $rootfs
+mkfs.ubifs -d $rootfs -m $pagesize -e $lebsize -c $maxlebcount -o $outputfile
+EOF
+
+  rm -rf $tmpdir
+}
+
+
+usage() {
+  echo -e "\n\
+  usage: $(basename $0) [options] INPUTFILE\n\
+\n
+  options:\n\
+    -N FILENAME		- read nand configuration from FILENAME\n\
+    -h, --help          - show this help\n\
+\n"
+  exit 1
+}
+
+
+while getopts ":N:p:" o; do
+    case "${o}" in
+        N)
+	    read_nand_config "${OPTARG}"
+            ;;
+        o)
+            outputfile=${OPTARG}
+            ;;
+        d)
+            outputdir=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+outputdir=${outputdir:-.}
+outputfile=${outputfile:-rootfs-$NAND_TYPE-$NAND_MAXLEB_COUNT-$NAND_EBSIZE-$NAND_PSIZE-$NAND_OSIZE.ubifs}
+inputfile=$1
+  
+prepare_ubifs $outputdir/$outputfile $inputfile $NAND_TYPE $NAND_MAXLEB_COUNT $NAND_ERASE_BLOCK_SIZE $NAND_SUBPAGE_SIZE
