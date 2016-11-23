@@ -42,6 +42,9 @@ read_nand_config() {
   if [[ -f "${CONFIGFILE}" ]]; then
     echo "Reading ${CONFIGFILE}"
     source "${CONFIGFILE}"
+    export NAND_EBSIZE=`printf %x $NAND_ERASE_BLOCK_SIZE`
+    export NAND_PSIZE=`printf %x $NAND_PAGE_SIZE`
+    export NAND_OSIZE=`printf %x $NAND_OOB_SIZE`
     export NAND_TYPE
     export NAND_MAXLEB_COUNT
     export NAND_SUBPAGE_SIZE
