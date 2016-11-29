@@ -14,6 +14,8 @@ require() {
     if [[ ! -z "$2" ]]; then
       echo -e "$2\n"
     fi
+
+    exit 1
   fi
 }
 
