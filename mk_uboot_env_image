@@ -1,0 +1,44 @@
+#!/bin/bash
+
+SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $SCRIPTDIR/common.sh
+
+require mkenvimage "Please install from http://git.denx.de/u-boot.git"
+
+usage() {
+  echo -e "\n\
+  usage: $(basename $0) [options] INPUTFILE\n\
+\n
+  options:\n\
+    -N FILENAME		- read nand configuration from FILENAME\n\
+    -h, --help          - show this help\n\
+\n"
+  exit 1
+}
+
+while getopts ":N:p:" o; do
+    case "${o}" in
+        N)
+	    read_nand_config "${OPTARG}"
+            ;;
+        o)
+            outputfile=${OPTARG}
+            ;;
+        d)
+            outputdir=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+outputdir=${outputdir:-.}
+outputfile=${outputfile:-uboot-env-$NAND_EBSIZE.bin}
+input=${1?No input file given}
+
+size=${NAND_ERASE_BLOCK_SIZE?No NAND selected}
+
+echo mkenvimage -s $NAND_ERASE_BLOCK_SIZE -o $outputdir/$outputfile $input 
+mkenvimage -s $NAND_ERASE_BLOCK_SIZE -o $outputdir/$outputfile $input 
