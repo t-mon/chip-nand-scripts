@@ -54,7 +54,7 @@ usage() {
 }
 
 
-while getopts ":N:p:" o; do
+while getopts ":N:d:o:" o; do
     case "${o}" in
         N)
 	    read_nand_config "${OPTARG}"

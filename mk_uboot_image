@@ -19,12 +19,14 @@ usage() {
 \n
   options:\n\
     -N FILENAME		- read nand configuration from FILENAME\n\
+    -d OUTPUTDIR        - write file to OUTPUTDIR (default: .)\n\
+    -o OUTPUTFILE       - write to OUTPUTFILE (default: uboot-<NAND_EBSIZE>.bin)n\
     -h, --help          - show this help\n\
 \n"
   exit 1
 }
 
-while getopts ":N:p:" o; do
+while getopts ":N:d:o:" o; do
     case "${o}" in
         N)
 	    read_nand_config "${OPTARG}"

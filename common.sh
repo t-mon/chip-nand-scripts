@@ -55,6 +55,7 @@ read_nand_config() {
     export NAND_OOB_SIZE
   else
     echo -e "ERROR: cannot find NAND configuration \"$1\"."
+    exit 1
   fi;
 }
 
