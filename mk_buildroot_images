@@ -1,0 +1,58 @@
+#!/bin/bash
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "$SCRIPTDIR/common.sh"
+
+usage() {
+  echo -e "\n\
+  usage: $(basename $0) [options] BUILDROOT_DIR\n\
+\n
+  options:\n\
+    -N FILENAME		- read nand configuration from FILENAME\n\
+    -d OUTPUTDIR        - write files to OUTPUTDIR (default: .)\n\
+    -h, --help          - show this help\n\
+\n"
+  exit 1
+}
+
+
+while getopts ":N:d:" o; do
+    case "${o}" in
+        N)
+	    NAND_CONFIG="${OPTARG}"
+            ;;
+        d)
+            outputdir="${OPTARG}"
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+INPUT_DIR="${1?no Buildroot directory specified}" || exit 1
+outputdir="${outputdir:-.}"
+
+echo "## creating SPL image" 
+echo "${SCRIPTDIR}/mk_spl_image" -N "${NAND_CONFIG}" -d "${outputdir}" "${INPUT_DIR}"/output/images/sunxi-spl.bin
+"${SCRIPTDIR}/mk_spl_image" -N "${NAND_CONFIG}" -d "${outputdir}" "${INPUT_DIR}"/output/images/sunxi-spl.bin
+
+echo "## creating uboot image" 
+echo "${SCRIPTDIR}/mk_uboot_image" -N "${NAND_CONFIG}" -d "${outputdir}" "${INPUT_DIR}"/output/images/u-boot-dtb.bin
+"${SCRIPTDIR}/mk_uboot_image" -N "${NAND_CONFIG}" -d "${outputdir}" "${INPUT_DIR}"/output/images/u-boot-dtb.bin
+
+echo "## creating uboot-env image" 
+echo "WARNING: using hardcoded CHIP PRO default for uboot environment"
+echo "${SCRIPTDIR}/mk_uboot_env_image" -N "${NAND_CONFIG}" -d "${outputdir}" "${INPUT_DIR}"/board/nextthing/chippro/uboot-env
+"${SCRIPTDIR}/mk_uboot_env_image" -N "${NAND_CONFIG}" -d "${outputdir}" "${INPUT_DIR}"/board/nextthing/chippro/uboot-env
+
+echo "## creating ubifs image" 
+echo "${SCRIPTDIR}/mk_ubifs_image" -N "${NAND_CONFIG}" -o "${outputdir}/rootfs.ubifs" "${INPUT_DIR}"/output/images/rootfs.tar
+"${SCRIPTDIR}/mk_ubifs_image" -N "${NAND_CONFIG}" -o "${outputdir}/rootfs.ubifs" "${INPUT_DIR}"/output/images/rootfs.tar
+
+echo "## creating ubi image" 
+echo "${SCRIPTDIR}/mk_ubi_image" -N "${NAND_CONFIG}" -d "${outputdir}" "${outputdir}"/rootfs.ubifs
+"${SCRIPTDIR}/mk_ubi_image" -N "${NAND_CONFIG}" -d "${outputdir}" "${outputdir}"/rootfs.ubifs
+
+
