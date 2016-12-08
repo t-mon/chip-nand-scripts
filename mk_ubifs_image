@@ -29,10 +29,11 @@ prepare_ubifs() {
     lebsize=$((eraseblocksize-pagesize*2))
   fi
 
-  mkdir -p $rootfs
   fakeroot /bin/bash <<EOF
+mkdir -p $rootfs
 tar -xf $rootfstar -C $rootfs
-mkfs.ubifs -d $rootfs -m $pagesize -e $lebsize -c $maxlebcount -o $outputfile
+echo mkfs.ubifs -d $rootfs -m $pagesize -e $lebsize -c $maxlebcount -o $outputfile
+mkfs.ubifs -d $rootfs -m $pagesize -e $lebsize -c $maxlebcount -o $outputfile ||exit 1
 EOF
 
   rm -rf $tmpdir
@@ -74,5 +75,6 @@ shift $((OPTIND-1))
 outputdir=${outputdir:-.}
 outputfile=${outputfile:-rootfs-$NAND_TYPE-$NAND_MAXLEB_COUNT-$NAND_EBSIZE-$NAND_PSIZE-$NAND_OSIZE.ubifs}
 inputfile=$1
-  
-prepare_ubifs $outputdir/$outputfile $inputfile $NAND_TYPE $NAND_MAXLEB_COUNT $NAND_ERASE_BLOCK_SIZE $NAND_SUBPAGE_SIZE
+
+echo prepare_ubifs $outputdir/$outputfile $inputfile $NAND_TYPE $NAND_MAXLEB_COUNT $NAND_ERASE_BLOCK_SIZE $NAND_PAGE_SIZE $NAND_SUBPAGE_SIZE
+prepare_ubifs $outputdir/$outputfile $inputfile $NAND_TYPE $NAND_MAXLEB_COUNT $NAND_ERASE_BLOCK_SIZE $NAND_PAGE_SIZE $NAND_SUBPAGE_SIZE
