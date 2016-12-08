@@ -44,9 +44,9 @@ size=${size:-NAND_ERASE_BLOCK_SIZE}
 size=${size?Specify either NAND type or environment size}
 hexsize=`printf %x $size`
 
-outputdir=${outputdir:-.}
-outputfile=${outputfile:-uboot-env-$hexsize.bin}
-input=${1?No input file given}
+outputdir="${outputdir:-.}"
+outputfile="${outputfile:-$outputdir/uboot-env-$hexsize.bin}"
+input="${1?No input file given}"
 
-echo mkenvimage -s $size -o $outputdir/$outputfile $input 
-mkenvimage -s $size -o $outputdir/$outputfile $input 
+echo mkenvimage -s $size -o $outputfile $input 
+mkenvimage -s $size -o $outputfile $input 

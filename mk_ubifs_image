@@ -73,8 +73,8 @@ done
 shift $((OPTIND-1))
 
 outputdir=${outputdir:-.}
-outputfile=${outputfile:-rootfs-$NAND_TYPE-$NAND_MAXLEB_COUNT-$NAND_EBSIZE-$NAND_PSIZE-$NAND_OSIZE.ubifs}
+outputfile=${outputfile:-$outputdir/rootfs-$NAND_TYPE-$NAND_MAXLEB_COUNT-$NAND_EBSIZE-$NAND_PSIZE-$NAND_OSIZE.ubifs}
 inputfile=$1
 
-echo prepare_ubifs $outputdir/$outputfile $inputfile $NAND_TYPE $NAND_MAXLEB_COUNT $NAND_ERASE_BLOCK_SIZE $NAND_PAGE_SIZE $NAND_SUBPAGE_SIZE
-prepare_ubifs $outputdir/$outputfile $inputfile $NAND_TYPE $NAND_MAXLEB_COUNT $NAND_ERASE_BLOCK_SIZE $NAND_PAGE_SIZE $NAND_SUBPAGE_SIZE
+echo prepare_ubifs $outputfile $inputfile $NAND_TYPE $NAND_MAXLEB_COUNT $NAND_ERASE_BLOCK_SIZE $NAND_PAGE_SIZE $NAND_SUBPAGE_SIZE
+prepare_ubifs $outputfile $inputfile $NAND_TYPE $NAND_MAXLEB_COUNT $NAND_ERASE_BLOCK_SIZE $NAND_PAGE_SIZE $NAND_SUBPAGE_SIZE

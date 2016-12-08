@@ -73,8 +73,8 @@ done
 shift $((OPTIND-1))
 
 outputdir=${outputdir:-.}
-outputfile=${outputfile:-spl-$NAND_EBSIZE-$NAND_PSIZE-$NAND_OSIZE.bin}
+outputfile=${outputfile:-$outputdir/spl-$NAND_EBSIZE-$NAND_PSIZE-$NAND_OSIZE.bin}
 spl=$1
   
-echo prepare_spl $outputdir/$outputfile $spl $NAND_ERASE_BLOCK_SIZE $NAND_PAGE_SIZE $NAND_OOB_SIZE
-prepare_spl $outputdir/$outputfile $spl $NAND_ERASE_BLOCK_SIZE $NAND_PAGE_SIZE $NAND_OOB_SIZE
+echo prepare_spl $outputfile $spl $NAND_ERASE_BLOCK_SIZE $NAND_PAGE_SIZE $NAND_OOB_SIZE
+prepare_spl $outputfile $spl $NAND_ERASE_BLOCK_SIZE $NAND_PAGE_SIZE $NAND_OOB_SIZE
