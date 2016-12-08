@@ -84,5 +84,4 @@ outputdir="${outputdir:-.}"
 outputfile="${outputfile:-$outputdir/chip-$NAND_EBSIZE-$NAND_PSIZE.ubi}"
 inputfile="$1"
 
-prepare_ubi "${outputfile}" "${inputfile}" $NAND_TYPE $NAND_MAXLEB_COUNT $NAND_ERASE_BLOCK_SIZE $NAND_SUBPAGE_SIZE
-
+prepare_ubi "${outputfile}" "${inputfile}" $NAND_TYPE $NAND_MAXLEB_COUNT $NAND_ERASE_BLOCK_SIZE $NAND_PAGE_SIZE $NAND_SUBPAGE_SIZE

@@ -42,5 +42,6 @@ input=${1?No input file given}
 
 size=${NAND_ERASE_BLOCK_SIZE?No NAND selected}
 
-echo mkenvimage -s $NAND_ERASE_BLOCK_SIZE -o $outputdir/$outputfile $input 
-mkenvimage -s $NAND_ERASE_BLOCK_SIZE -o $outputdir/$outputfile $input 
+echo WARNING using hardcoded partition size for U-Boot env
+echo mkenvimage -s $((4*1024*1024)) -o $outputdir/$outputfile $input 
+mkenvimage -s $((4*1024*1024)) -o $outputdir/$outputfile $input 
