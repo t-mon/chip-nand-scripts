@@ -11,6 +11,7 @@ usage() {
 \n
   options:\n\
     -N FILENAME		- read nand configuration from FILENAME\n\
+    -S ENV_SIZE		- create environment of ENV_SIZE bytes (default: NAND_ERASE_BLOCK_SIZE)\n\
     -d OUTPUTDIR        - write file to OUTPUTDIR (default: .)\n\
     -o OUTPUTFILE       - write to OUTPUTFILE (default: uboot-env-<NAND_EBSIZE>.bin)n\
     -h, --help          - show this help\n\
@@ -18,10 +19,13 @@ usage() {
   exit 1
 }
 
-while getopts ":N:d:o:" o; do
+while getopts ":N:d:o:S:" o; do
     case "${o}" in
         N)
 	    read_nand_config "${OPTARG}"
+            ;;
+        S)
+	    size="${OPTARG}"
             ;;
         o)
             outputfile=${OPTARG}
@@ -36,12 +40,13 @@ while getopts ":N:d:o:" o; do
 done
 shift $((OPTIND-1))
 
+size=${size:-NAND_ERASE_BLOCK_SIZE}
+size=${size?Specify either NAND type or environment size}
+hexsize=`printf %x $size`
+
 outputdir=${outputdir:-.}
-outputfile=${outputfile:-uboot-env-$NAND_EBSIZE.bin}
+outputfile=${outputfile:-uboot-env-$hexsize.bin}
 input=${1?No input file given}
 
-size=${NAND_ERASE_BLOCK_SIZE?No NAND selected}
-
-echo WARNING using hardcoded partition size for U-Boot env
-echo mkenvimage -s $((4*1024*1024)) -o $outputdir/$outputfile $input 
-mkenvimage -s $((4*1024*1024)) -o $outputdir/$outputfile $input 
+echo mkenvimage -s $size -o $outputdir/$outputfile $input 
+mkenvimage -s $size -o $outputdir/$outputfile $input 
