@@ -41,6 +41,14 @@ filesize() {
 read_nand_config() {
   local CONFIGFILE=$1
 
+  if [[ ! -f "${CONFIGFILE}" ]]; then
+    CONFIGFILE="$SCRIPTDIR/$CONFIGFILE"
+  fi
+
+  if [[ ! -f "${CONFIGFILE}" ]]; then
+    CONFIGFILE="$SCRIPTDIR/nand_configs/$CONFIGFILE"
+  fi
+
   if [[ -f "${CONFIGFILE}" ]]; then
     echo "Reading ${CONFIGFILE}"
     source "${CONFIGFILE}"
