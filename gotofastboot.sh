@@ -3,7 +3,7 @@
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "$SCRIPTDIR/common.sh"
 
-FEL=sunxi-fel
+require fel
 
 INPUT_DIR="${1:-.}"
 
