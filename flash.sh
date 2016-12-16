@@ -12,7 +12,7 @@ UBI_IMAGE=flash-rootfs.bin
 
 require fastboot
 
-"${SCRIPTDIR}/gotofastboot.sh" "${IMAGE_DIR}"
+"${SCRIPTDIR}/gotofastboot.sh" "${IMAGE_DIR}" || exit 1
 
 wait_for_fastboot
 
