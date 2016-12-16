@@ -1,6 +1,5 @@
 #!/bin/bash
 
-FEL=sunxi-fel
 TIMEOUT=15
 
 #------------------------------------------------------------
@@ -37,16 +36,34 @@ wait_for_fel() {
 
 #------------------------------------------------------------
 file_exists_or_quit() {
-    if [[ ! -f "$1" ]]; then
-        echo -e "\nERROR: file $1 does not exists\n\n"
-        exit 1
-    fi
+  if [[ ! -f "$1" ]]; then
+    echo -e "\nERROR: file $1 does not exists\n\n"
+    exit 1
+  fi
+}
+
+#------------------------------------------------------------
+require_fel() {
+  FEL=$(which sunxi-fel)
+  FEL=${FEL:-$(which fel)}
+  if [[ -z "$FEL" ]]; then
+    echo "ERROR: cannot find sunxi fel or fel - please install sunxi-tools"
+    exit 1
+  fi
+
+  export FEL
+  alias fel="${FEL}"
 }
 
 #------------------------------------------------------------
 require() {
   if [[ -z "$1" ]]; then
     echo -e "\nusage: require EXECUTABLE\n\n"
+  fi
+
+  if [[ "$1" == "fel" ]] || [[ "$1" == "sunxi-fel" ]]; then
+    require_fel
+    return
   fi
 
   path_to_executable=$(which $1) 
