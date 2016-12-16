@@ -9,6 +9,7 @@ SPL_IMAGE=flash-spl.bin
 UBOOT_IMAGE=flash-uboot.bin
 UBOOT_ENV_IMAGE=flash-uboot-env.bin
 UBI_IMAGE=flash-rootfs.bin
+VID="-i 0x1f3a"
 
 require fastboot
 
@@ -16,13 +17,13 @@ require fastboot
 
 wait_for_fastboot
 
-fastboot erase spl-backup
-fastboot erase uboot
-fastboot erase env
-fastboot erase UBI
+fastboot ${VID} erase spl-backup
+fastboot ${VID} erase uboot
+fastboot ${VID} erase env
+fastboot ${VID} erase UBI
 
-fastboot flash spl        "${IMAGE_DIR}/${SPL_IMAGE}"
-fastboot flash spl-backup "${IMAGE_DIR}/${SPL_IMAGE}"
-fastboot flash uboot      "${IMAGE_DIR}/${UBOOT_IMAGE}"
-fastboot flash env        "${IMAGE_DIR}/${UBOOT_ENV_IMAGE}" 
-fastboot flash UBI        "${IMAGE_DIR}/${UBI_IMAGE}"
+fastboot ${VID} flash spl        "${IMAGE_DIR}/${SPL_IMAGE}"
+fastboot ${VID} flash spl-backup "${IMAGE_DIR}/${SPL_IMAGE}"
+fastboot ${VID} flash uboot      "${IMAGE_DIR}/${UBOOT_IMAGE}"
+fastboot ${VID} flash env        "${IMAGE_DIR}/${UBOOT_ENV_IMAGE}"
+fastboot ${VID} flash UBI        "${IMAGE_DIR}/${UBI_IMAGE}"
