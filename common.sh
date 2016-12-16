@@ -1,5 +1,48 @@
 #!/bin/bash
 
+FEL=sunxi-fel
+TIMEOUT=15
+
+#------------------------------------------------------------
+wait_for_fastboot() {
+  echo -n "waiting for fastboot...";
+  for ((i=$TIMEOUT; i>0; i--)) {
+    if [[ ! -z "$(fastboot -i 0x1f3a $@ devices)" ]]; then
+      echo "OK";
+      return 0;
+    fi
+    echo -n ".";
+    sleep 1
+  }
+
+  echo "TIMEOUT";
+  return 1
+}
+
+#------------------------------------------------------------
+wait_for_fel() {
+  echo -n "waiting for fel...";
+  for ((i=$TIMEOUT; i>0; i--)) {
+    if ${FEL} $@ ver 2>/dev/null >/dev/null; then
+      echo "OK"
+      return 0;
+    fi
+    echo -n ".";
+    sleep 1
+  }
+
+  echo "TIMEOUT";
+  return 1
+}
+
+#------------------------------------------------------------
+file_exists_or_quit() {
+    if [[ ! -f "$1" ]]; then
+        echo -e "\nERROR: file $1 does not exists\n\n"
+        exit 1
+    fi
+}
+
 #------------------------------------------------------------
 require() {
   if [[ -z "$1" ]]; then
