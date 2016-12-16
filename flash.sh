@@ -13,14 +13,14 @@ VID="-i 0x1f3a"
 
 require fastboot
 
-"${SCRIPTDIR}/gotofastboot.sh" "${IMAGE_DIR}" || exit 1
+UBOOT_SCRIPT="${SCRIPTDIR}/erasenand.scr.bin" "${SCRIPTDIR}/gotofastboot.sh" "${IMAGE_DIR}" || exit 1
 
 wait_for_fastboot
 
-fastboot ${VID} erase spl-backup
-fastboot ${VID} erase uboot
-fastboot ${VID} erase env
-fastboot ${VID} erase UBI
+#fastboot ${VID} erase spl-backup
+#fastboot ${VID} erase uboot
+#fastboot ${VID} erase env
+#fastboot ${VID} erase UBI
 
 fastboot ${VID} flash spl        "${IMAGE_DIR}/${SPL_IMAGE}"
 fastboot ${VID} flash spl-backup "${IMAGE_DIR}/${SPL_IMAGE}"
